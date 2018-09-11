@@ -1,13 +1,7 @@
 import io.restassured.RestAssured;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.Cookie;
-import io.restassured.internal.mapping.Jackson2Mapper;
-import io.restassured.mapper.factory.DefaultJackson2ObjectMapperFactory;
-import io.restassured.mapper.factory.Jackson2ObjectMapperFactory;
-import io.restassured.parsing.Parser;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static io.restassured.RestAssured.basic;
@@ -27,53 +21,49 @@ public class DeleloperTests {
         RestAssured.baseURI = BASE_URL;
         RestAssured.port = serverPort;
         //TODO использовать спец метод для склеивания?
-//        RestAssured.basePath = String.format("/app/rest/%s", apiVersion);
-        RestAssured.basePath = "/app/rest/";
-        RestAssured.authentication = basic("ksu", "ksu1");
+        RestAssured.basePath = String.format("/app/rest/%s", apiVersion);
+//        RestAssured.basePath = "/app/rest/";
+        RestAssured.authentication = basic("admin", "admin1");
         String TCSESSIONID = given().log().all().when().get("/server").getCookie("TCSESSIONID");
 
         cookie = new Cookie.Builder("TCSESSIONID", TCSESSIONID).build();
     }
 
     @Test
-    public void test() {
-        String w = given().log().all().when().get("/builds").body().prettyPrint();
-        System.out.println(w);
-
+    public void getBuildsTest() {
+        given().log().all().when().get("/builds").body().prettyPrint();
     }
 
-    @Ignore
     @Test
     //TODO почему-то не работает авторизация через куки
     public void queueNewBuild() {
-        Build newBuild = new Build();
-        newBuild.setBuildTypeId("FirstProject_FirstConf");
-        String x = given().log().all().contentType("application/json").body(newBuild).
+        getQueueSize();
+        Build testBuild = createSomeBuild();
+        given().log().all().contentType("application/json").body(testBuild).
                 expect().statusCode(200).
                 when().post("/buildQueue").body().prettyPrint();
-        System.out.println(x);
+        getQueueSize();
     }
 
     @Test
     public void deleteExistedBuild() {
-        Build build = new Build();
-        build.setId(3L);
-        given().log().all().contentType("application/json").body(build).
+        getQueueSize();
+        Build testBuild = createSomeBuild();
+        queueBuild(testBuild);
+        given().log().all().contentType("application/json").body(testBuild).
                 expect().statusCode(200).
                 when().delete("/buildQueue").body().prettyPrint();
+        getQueueSize();
     }
 
     @Test
     public void getBuildTypesTest() {
-        BuildTypes d = getBuildTypes();
-//        System.out.println(d.getBuildType().get(0).getId());
-        System.out.println(d.getBuildType());
+        getBuildTypes();
     }
 
     public Build createSomeBuild() {
-        Build newBuild = new Build();
-        newBuild.setBuildTypeId("FirstProject_FirstConf");
-        return newBuild;
+        String someBuildTypeId = getBuildTypes().getBuildType().stream().findAny().get().getId();
+        return new Build(someBuildTypeId);
     }
 
     public BuildTypes getBuildTypes() {
@@ -82,10 +72,14 @@ public class DeleloperTests {
                 when().get("/buildTypes").as(BuildTypes.class);
     }
 
-//    public String getBuildTypes() {
-//        return given().filter(new ResponseLoggingFilter()).log().all().
-//                expect().statusCode(200).
-//                when().get("/buildTypes").xmlPath().getString("buildTypes.buildType[0].@id");
-//    }
 
+    public void queueBuild(Build build) {
+        given().log().all().contentType("application/json").body(build).
+                expect().statusCode(200).
+                when().post("/buildQueue");
+    }
+
+    public void getQueueSize(){
+        given().log().all().when().get("/buildQueue").body().prettyPrint();
+    }
 }

@@ -19,6 +19,7 @@ dependencies {
 //    testCompile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.14.0'
     compile group: 'org.seleniumhq.selenium', name: 'selenium-chrome-driver', version: '3.14.0'
 }
+
 buildscript {
     ext.kotlin_version = '1.2.61'
     repositories {

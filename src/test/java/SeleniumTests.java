@@ -1,8 +1,10 @@
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.UUID;
 
+@Ignore
 public class SeleniumTests extends BaseWebTest {
     @Test
     public void testCreateNewUserByDev() {
