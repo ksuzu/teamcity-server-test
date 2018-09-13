@@ -1,11 +1,14 @@
+import dto.Build;
+import dto.BuildRequest;
+import dto.BuildType;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.Cookie;
 import org.junit.Before;
 import org.junit.Test;
 
-import static io.restassured.RestAssured.basic;
 import static io.restassured.RestAssured.given;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -15,18 +18,23 @@ public class DeleloperTests {
     Integer serverPort = 9000;
     Cookie cookie;
     String apiVersion = "2018.1";
+    TeamcityClient teamcityClient;
+    TeamcityClient teamcityClientForDataPrepare;
 
+
+    //TODO заставить RestAssured подготовительные и тестовые запросы слать из-под разных пользователей?
     @Before
     public void SetUp() {
         RestAssured.baseURI = BASE_URL;
         RestAssured.port = serverPort;
-        //TODO использовать спец метод для склеивания?
         RestAssured.basePath = String.format("/app/rest/%s", apiVersion);
 //        RestAssured.basePath = "/app/rest/";
-        RestAssured.authentication = basic("admin", "admin1");
+//        RestAssured.authentication = basic("admin", "admin1");
         String TCSESSIONID = given().log().all().when().get("/server").getCookie("TCSESSIONID");
 
         cookie = new Cookie.Builder("TCSESSIONID", TCSESSIONID).build();
+        teamcityClient = new TeamcityClient("user1", "user1");
+        teamcityClientForDataPrepare = new TeamcityClient("admin", "admin1");
     }
 
     @Test
@@ -37,49 +45,41 @@ public class DeleloperTests {
     @Test
     //TODO почему-то не работает авторизация через куки
     public void queueNewBuild() {
-        getQueueSize();
-        Build testBuild = createSomeBuild();
-        given().log().all().contentType("application/json").body(testBuild).
-                expect().statusCode(200).
-                when().post("/buildQueue").body().prettyPrint();
-        getQueueSize();
+        //prepere test data
+        Long buildNumberBefore = teamcityClientForDataPrepare.getQueueSize();
+        BuildType uniqBuildType = teamcityClientForDataPrepare.createUniqueBuildType();
+        BuildRequest buildRequest = createBuildRequest(uniqBuildType);
+        //test
+        Build createdBuild = teamcityClient.queueBuild(buildRequest);
+        Long buildNumberAfter = teamcityClientForDataPrepare.getQueueSize();
+        Long expectedBuildNumberAfter = buildNumberBefore + 1;
+        assertEquals(expectedBuildNumberAfter, buildNumberAfter);
+        assertEquals(buildRequest.getBuildTypeId(), createdBuild.getBuildTypeId());
     }
 
     @Test
-    public void deleteExistedBuild() {
-        getQueueSize();
-        Build testBuild = createSomeBuild();
-        queueBuild(testBuild);
-        given().log().all().contentType("application/json").body(testBuild).
+    public void deleteExistedBuildFromBuildQueue() {
+        //prepere test data
+        BuildType uniqBuildType = teamcityClientForDataPrepare.createUniqueBuildType();
+        BuildRequest buildRequest = createBuildRequest(uniqBuildType);
+        Build buildInQueue = teamcityClientForDataPrepare.queueBuild(buildRequest);
+        Long buildNumberBefore = teamcityClientForDataPrepare.getQueueSize();
+        //test
+        given().log().all().filter(new ResponseLoggingFilter()).contentType("application/json").body(buildInQueue).
                 expect().statusCode(200).
                 when().delete("/buildQueue").body().prettyPrint();
-        getQueueSize();
+        Long buildNumberAfter = teamcityClientForDataPrepare.getQueueSize();
+        Long expectedBuildNumberAfter = buildNumberBefore - 1;
+        assertEquals("The number of builds in buildQueue did not decrease after removing from the queue",
+                expectedBuildNumberAfter, buildNumberAfter);
     }
 
     @Test
     public void getBuildTypesTest() {
-        getBuildTypes();
+        teamcityClient.getBuildTypes();
     }
 
-    public Build createSomeBuild() {
-        String someBuildTypeId = getBuildTypes().getBuildType().stream().findAny().get().getId();
-        return new Build(someBuildTypeId);
-    }
-
-    public BuildTypes getBuildTypes() {
-        return given().filter(new ResponseLoggingFilter()).log().all().
-                expect().statusCode(200).
-                when().get("/buildTypes").as(BuildTypes.class);
-    }
-
-
-    public void queueBuild(Build build) {
-        given().log().all().contentType("application/json").body(build).
-                expect().statusCode(200).
-                when().post("/buildQueue");
-    }
-
-    public void getQueueSize(){
-        given().log().all().when().get("/buildQueue").body().prettyPrint();
+    public BuildRequest createBuildRequest(BuildType buildType) {
+        return new BuildRequest(buildType.getId());
     }
 }
