@@ -24,6 +24,10 @@ public class MainPage {
         return userPanel.findElement(By.partialLinkText("Administration"));
     }
 
+    public Boolean isAdministrationPageLinkAbset() {
+        return userPanel.findElements(By.partialLinkText("Administration")).isEmpty();
+    }
+
     public AdministrationPage getAdministrationPage() {
         //FIXME искать по тексту не очень
         userPanel.findElement(By.partialLinkText("Administration")).click();

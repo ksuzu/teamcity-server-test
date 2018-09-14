@@ -12,9 +12,10 @@ public class SeleniumTests extends BaseWebTest {
     String devPassword = "user1";
 
     @Test
-    public void testCreateNewUserByDev() {
+    public void testAvailabilityAdministrationModuleByDevUser() {
         LoginPage loginPage = new LoginPage(driver, BASE_URI);
-        loginPage.loginAs(devUsername, devPassword);
+        MainPage mainPage = loginPage.loginAs(devUsername, devPassword);
+        Assert.assertEquals(true, mainPage.isAdministrationPageLinkAbset());
     }
 
     @Test
