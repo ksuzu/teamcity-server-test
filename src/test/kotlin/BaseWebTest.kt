@@ -5,8 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver
 import java.util.concurrent.TimeUnit
 
 abstract class BaseWebTest {
-    protected val driver = ChromeDriver()
-    val BASE_URI = "${Settings.teamcityServerUrl}:${Settings.teamcityServerPort}"
+    val driver = ChromeDriver()
 
     @Before
     fun setUp() {
@@ -19,10 +18,10 @@ abstract class BaseWebTest {
     }
 
     companion object {
+        val BASE_URI = "${Settings.teamcityServerUrl}:${Settings.teamcityServerPort}"
 
         init {
-            Settings.teamcityServerPort
-            System.setProperty("webdriver.chrome.driver", "C:/chromedriver.exe")
+            System.setProperty("webdriver.chrome.driver", Settings.webDriverPath)
         }
     }
 }
