@@ -5,7 +5,6 @@ import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 
 class UserPanel(private val driver: WebDriver) {
-    private val mainPageUrl: String? = null
     var userPanel: WebElement
 
     val isAdministrationPageLinkAbset: Boolean?

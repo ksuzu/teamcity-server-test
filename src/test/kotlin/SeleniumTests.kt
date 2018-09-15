@@ -5,7 +5,6 @@ import pageModel.UserPanel
 
 import java.util.UUID
 
-@Ignore
 class SeleniumTests : BaseWebTest() {
     private val adminUsername = "admin"
     private val adminPassword = "admin1"
@@ -76,7 +75,9 @@ class SeleniumTests : BaseWebTest() {
 
     @Test
     fun runBuildWithParameters() {
+        //prepare test data
         val (id, testBuildTypeName, testProjectName) = teamcityClientForDataPrepare.createUniqueBuildType()
+        //test
         val loginPage = LoginPage(driver, BASE_URI)
         loginPage.open()
         val overviewPage = loginPage.loginAs(adminUsername, adminPassword)
@@ -84,9 +85,7 @@ class SeleniumTests : BaseWebTest() {
         dialog.navigateToParameters().addNewConfigurationParameter("name", "value")
         dialog.submitRunBuild()
 
-//        val d = teamcityClientForDataPrepare.getBuildQueue().build.stream().anyMatch { (_, buildTypeId) -> buildTypeId == id }
-        val d = teamcityClientForDataPrepare.getBuildQueue().build.count { build -> build.buildTypeId == id }
-
-        Assert.assertEquals(1, d)
+        val numberOfBuildsOfThisTypeInQueue = teamcityClientForDataPrepare.getBuildQueue().build.count { build -> build.buildTypeId == id }
+        Assert.assertEquals("Number of builds of this buildType in queue was different of expected!",1, numberOfBuildsOfThisTypeInQueue)
     }
 }
