@@ -19,27 +19,27 @@ public class SeleniumTests extends BaseWebTest {
 
     @Before
     public void initTeamcityApiClient() {
-        RestAssured.baseURI = BASE_URI;
+        RestAssured.baseURI = getBASE_URI();
         RestAssured.basePath = "/app/rest/";
         teamcityClientForDataPrepare = new TeamcityClient("admin", "admin1");
     }
 
     @Test
     public void testAvailabilityAdministrationModuleByDevUser() {
-        LoginPage loginPage = new LoginPage(driver, BASE_URI);
+        LoginPage loginPage = new LoginPage(getDriver(), getBASE_URI());
         loginPage.open();
         loginPage.loginAs(devUsername, devPassword);
-        Assert.assertEquals(true, new UserPanel(driver).isAdministrationPageLinkAbset());
+        Assert.assertEquals(true, new UserPanel(getDriver()).isAdministrationPageLinkAbset());
     }
 
     @Test
     public void testCreateNewUserByAdmin() {
         String testUser = UUID.randomUUID().toString();
         String testPassword = UUID.randomUUID().toString();
-        LoginPage loginPage = new LoginPage(driver, BASE_URI);
+        LoginPage loginPage = new LoginPage(getDriver(), getBASE_URI());
         loginPage.open();
         loginPage.loginAs(adminUsername, adminPassword);
-        AdministrationPage administrationPage = new UserPanel(driver).openAdministrationPage();
+        AdministrationPage administrationPage = new UserPanel(getDriver()).openAdministrationPage();
         UsersModule userModuleBeforeAddingUser = administrationPage.openUsersModule();
         Long userCountBefore = userModuleBeforeAddingUser.getUsersCount();
         UserCreationPage userCreationPage = userModuleBeforeAddingUser.getUserCreationPage();
@@ -57,10 +57,10 @@ public class SeleniumTests extends BaseWebTest {
     public void incorrectEnterRetypePasswordOnUserCreation_shouldGiveError() {
         String testUser = UUID.randomUUID().toString();
         String testPassword = UUID.randomUUID().toString();
-        LoginPage loginPage = new LoginPage(driver, BASE_URI);
+        LoginPage loginPage = new LoginPage(getDriver(), getBASE_URI());
         loginPage.open();
         loginPage.loginAs(adminUsername, adminPassword);
-        AdministrationPage administrationPage = new UserPanel(driver).openAdministrationPage();
+        AdministrationPage administrationPage = new UserPanel(getDriver()).openAdministrationPage();
         UsersModule userModuleBeforeAddingUser = administrationPage.openUsersModule();
         Long userCountBefore = userModuleBeforeAddingUser.getUsersCount();
         UserCreationPage userCreationPage = userModuleBeforeAddingUser.getUserCreationPage();
@@ -71,7 +71,7 @@ public class SeleniumTests extends BaseWebTest {
 
         Assert.assertEquals("Passwords mismatch", userCreationPage.tryLookForPasswordError());
 
-        new UserPanel(driver).openAdministrationPage();
+        new UserPanel(getDriver()).openAdministrationPage();
         UsersModule userModuleAfterAddingUser = administrationPage.openUsersModule();
         Assert.assertEquals(userCountBefore, userModuleAfterAddingUser.getUsersCount());
     }
@@ -81,7 +81,7 @@ public class SeleniumTests extends BaseWebTest {
         BuildType testBuildType = teamcityClientForDataPrepare.createUniqueBuildType();
         String testBuildTypeName = testBuildType.getName();
         String testProjectName = testBuildType.getProjectName();
-        LoginPage loginPage = new LoginPage(driver, BASE_URI);
+        LoginPage loginPage = new LoginPage(getDriver(), getBASE_URI());
         loginPage.open();
         OverviewPage overviewPage = loginPage.loginAs(adminUsername, adminPassword);
         CustomBuildDialog dialog = overviewPage.navigateToProjectByName(testProjectName).navigateToBuildTypeByName(testBuildTypeName).
