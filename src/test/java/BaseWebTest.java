@@ -1,3 +1,4 @@
+import io.restassured.RestAssured;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -15,7 +16,7 @@ public abstract class BaseWebTest {
     @Before
     public void setUp() {
         driver = new ChromeDriver();
-//        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
     }
 
     @After

@@ -79,11 +79,15 @@ public class TeamcityClient {
         return createBuildType(buildTypeForCreation);
     }
 
-    public Long getQueueSize() {
-        return given().spec(spec).expect().statusCode(HttpStatus.SC_OK).when().get("/buildQueue").as(Builds.class).getCount();
+    public Long getBuildQueueSize() {
+        return getBuildQueue().getCount();
     }
 
-    public void getBuilds() {
-        given().spec(spec).expect().statusCode(HttpStatus.SC_OK).when().get("/builds");
+    public Builds getBuildQueue() {
+        return given().spec(spec).expect().statusCode(HttpStatus.SC_OK).when().get("/buildQueue").as(Builds.class);
+    }
+
+    public Builds getBuilds() {
+        return given().spec(spec).expect().statusCode(HttpStatus.SC_OK).when().get("/builds").as(Builds.class);
     }
 }

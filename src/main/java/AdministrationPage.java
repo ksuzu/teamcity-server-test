@@ -15,6 +15,4 @@ public class AdministrationPage {
         driver.findElement(ADMIN_CONTEINER).findElement(ADMIN_SIDEBAR).findElement(By.partialLinkText("Users")).click();
         return new UsersModule(driver);
     }
-
-
 }

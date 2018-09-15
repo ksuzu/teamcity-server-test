@@ -26,9 +26,9 @@ public class DeleloperTests {
         RestAssured.baseURI = BASE_URL;
         RestAssured.port = serverPort;
         RestAssured.basePath = String.format("/app/rest/%s", apiVersion);
-        String TCSESSIONID = given().log().all().when().get("/server").getCookie("TCSESSIONID");
+//        String TCSESSIONID = given().log().all().when().get("/server").getCookie("TCSESSIONID");
 
-        cookie = new Cookie.Builder("TCSESSIONID", TCSESSIONID).build();
+//        cookie = new Cookie.Builder("TCSESSIONID", TCSESSIONID).build();
         teamcityClientByTestUser = new TeamcityClient("user1", "user1");
         teamcityClientForDataPrepare = new TeamcityClient("admin", "admin1");
     }
@@ -47,12 +47,12 @@ public class DeleloperTests {
     //TODO почему-то не работает авторизация через куки
     public void queueNewBuild() {
         //prepere test data
-        Long buildNumberBefore = teamcityClientForDataPrepare.getQueueSize();
+        Long buildNumberBefore = teamcityClientForDataPrepare.getBuildQueueSize();
         BuildType uniqBuildType = teamcityClientForDataPrepare.createUniqueBuildType();
         BuildRequest buildRequest = createBuildRequest(uniqBuildType);
         //test
         Build createdBuild = teamcityClientByTestUser.queueBuild(buildRequest);
-        Long buildNumberAfter = teamcityClientForDataPrepare.getQueueSize();
+        Long buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize();
         Long expectedBuildNumberAfter = buildNumberBefore + 1;
         assertEquals(expectedBuildNumberAfter, buildNumberAfter);
         assertEquals(buildRequest.getBuildTypeId(), createdBuild.getBuildTypeId());
@@ -64,10 +64,10 @@ public class DeleloperTests {
         BuildType uniqBuildType = teamcityClientForDataPrepare.createUniqueBuildType();
         BuildRequest buildRequest = createBuildRequest(uniqBuildType);
         Build buildInQueue = teamcityClientByTestUser.queueBuild(buildRequest);
-        Long buildNumberBefore = teamcityClientForDataPrepare.getQueueSize();
+        Long buildNumberBefore = teamcityClientForDataPrepare.getBuildQueueSize();
         //test
         teamcityClientByTestUser.removeBuildFromQueue(buildInQueue);
-        Long buildNumberAfter = teamcityClientForDataPrepare.getQueueSize();
+        Long buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize();
         Long expectedBuildNumberAfter = buildNumberBefore - 1;
         assertEquals("The number of builds in buildQueue after removing from the queue was different of expected!",
                 expectedBuildNumberAfter, buildNumberAfter);
@@ -79,10 +79,10 @@ public class DeleloperTests {
         BuildType uniqBuildType = teamcityClientForDataPrepare.createUniqueBuildType();
         BuildRequest buildRequest = createBuildRequest(uniqBuildType);
         Build buildInQueue = teamcityClientForDataPrepare.queueBuild(buildRequest);
-        Long buildNumberBefore = teamcityClientForDataPrepare.getQueueSize();
+        Long buildNumberBefore = teamcityClientForDataPrepare.getBuildQueueSize();
         //test
         teamcityClientByTestUser.removeBuildFromQueue(buildInQueue);
-        Long buildNumberAfter = teamcityClientForDataPrepare.getQueueSize();
+        Long buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize();
         Long expectedBuildNumberAfter = buildNumberBefore - 1;
         assertEquals("The number of builds in buildQueue after removing from the queue was different of expected!",
                 expectedBuildNumberAfter, buildNumberAfter);
@@ -94,10 +94,10 @@ public class DeleloperTests {
         BuildType uniqBuildType = teamcityClientForDataPrepare.createUniqueBuildType();
         BuildRequest buildRequest = createBuildRequest(uniqBuildType);
         Build buildInQueue = teamcityClientForDataPrepare.queueBuild(buildRequest);
-        Long buildNumberBefore = teamcityClientForDataPrepare.getQueueSize();
+        Long buildNumberBefore = teamcityClientForDataPrepare.getBuildQueueSize();
         //test
         teamcityClientByTestUser.removeBuildFromQueue(buildInQueue, HttpStatus.SC_FORBIDDEN);
-        Long buildNumberAfter = teamcityClientForDataPrepare.getQueueSize();
+        Long buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize();
         assertEquals("The number of builds in the queue before and after cancel-operation is not equal!",
                 buildNumberBefore, buildNumberAfter);
     }

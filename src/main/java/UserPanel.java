@@ -2,21 +2,15 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class MainPage {
+public class UserPanel {
     private WebDriver driver;
     private String mainPageUrl;
     private static final By USER_PANEL = By.id("userPanel");
     public WebElement userPanel;
 
-    public MainPage(WebDriver driver) {
+    public UserPanel(WebDriver driver) {
         this.driver = driver;
         userPanel = driver.findElement(USER_PANEL);
-    }
-
-    public MainPage(WebDriver driver, String baseUri) {
-        this.driver = driver;
-        userPanel = driver.findElement(USER_PANEL);
-        mainPageUrl = baseUri;
     }
 
     public WebElement administrationPageLink() {
@@ -28,8 +22,7 @@ public class MainPage {
         return userPanel.findElements(By.partialLinkText("Administration")).isEmpty();
     }
 
-    public AdministrationPage getAdministrationPage() {
-        //FIXME искать по тексту не очень
+    public AdministrationPage openAdministrationPage() {
         userPanel.findElement(By.partialLinkText("Administration")).click();
         return new AdministrationPage(driver);
     }

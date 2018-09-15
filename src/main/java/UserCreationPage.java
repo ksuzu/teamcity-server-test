@@ -9,19 +9,33 @@ public class UserCreationPage {
     private static final By PASSWORD1 = By.id("password1");
     private static final By RETYPED_PASSWORD = By.id("retypedPassword");
     private static final By SUBMIT_BUTTON = By.name("submitCreateUser");
-    public WebElement teamcityUser;
-    public WebElement name;
-    public WebElement passwordInput;
-    public WebElement retypedPasswordInput;
-    public WebElement submitButton;
+    private static final By PASSWORD_ERROR = By.tagName("data-error");
 
     public UserCreationPage(WebDriver driver) {
         this.driver = driver;
+    }
 
-        this.teamcityUser = driver.findElement(USERNAME);
-        this.name = driver.findElement(NAME);
-        this.passwordInput = driver.findElement(PASSWORD1);
-        this.retypedPasswordInput = driver.findElement(RETYPED_PASSWORD);
-        this.submitButton = driver.findElement(SUBMIT_BUTTON);
+    public void fillUserField(String teamcityUsername) {
+        driver.findElement(USERNAME).sendKeys(teamcityUsername);
+    }
+
+    public void fillNameField(String name) {
+        driver.findElement(NAME).sendKeys(name);
+    }
+
+    public void fillPasswordField(String password) {
+        driver.findElement(PASSWORD1).sendKeys(password);
+    }
+
+    public void fillRetypedPasswordField(String password) {
+        driver.findElement(RETYPED_PASSWORD).sendKeys(password);
+    }
+
+    public void clickSubmitButton() {
+        driver.findElement(SUBMIT_BUTTON).click();
+    }
+
+    public String tryLookForPasswordError() {
+        return driver.findElement(By.className("input-wrapper_password1")).getAttribute("data-error");
     }
 }
