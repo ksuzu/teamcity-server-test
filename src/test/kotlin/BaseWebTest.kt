@@ -24,6 +24,11 @@ abstract class BaseWebTest {
         driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS)
     }
 
+    @After
+    fun shutdown() {
+        driver.quit()
+    }
+
     companion object {
         val BASE_URI = "${Settings.teamcityServerUrl}:${Settings.teamcityServerPort}"
 

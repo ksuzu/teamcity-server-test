@@ -5,6 +5,9 @@ services:
     container_name: selenium-hub
     ports:
     - "4444:4444"
+    environment:
+    - GRID_BROWSER_TIMEOUT=300
+    - GRID_TIMEOUT=720
   chrome:
     image: selenium/node-chrome:3.14.0-dubnium
     depends_on:
@@ -12,6 +15,8 @@ services:
     environment:
     - HUB_HOST=selenium-hub
     - HUB_PORT=4444
+    volumes:
+    - C:/compose/screenshots:/tmp/screenshots
   teamcity-server:
     image: jetbrains/teamcity-server
     ports:

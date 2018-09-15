@@ -10,7 +10,7 @@ import org.junit.runner.Description
 class ScreenShotRule(private val driver: WebDriver, val destPath: String) : TestWatcher() {
 
     private fun destinationFile(fileName: String): File {
-        val absoluteFileName = "${destPath}_${fileName}"
+        val absoluteFileName = "${destPath}/${fileName}.png"
 
         return File(absoluteFileName)
     }
@@ -20,14 +20,11 @@ class ScreenShotRule(private val driver: WebDriver, val destPath: String) : Test
 
         val scrFile = takesScreenshot.getScreenshotAs(OutputType.FILE)
         val destFile = destinationFile(description.getClassName() + "-" + description.getMethodName())
+        destFile.createNewFile() // todo вероятно можно убрать
         try {
             copyFile(scrFile, destFile)
         } catch (ioe: IOException) {
             throw RuntimeException(ioe)
         }
-    }
-
-    override fun finished(description: Description) {
-        driver.close()
     }
 }
