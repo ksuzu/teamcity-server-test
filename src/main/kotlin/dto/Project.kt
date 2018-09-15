@@ -2,7 +2,7 @@ package dto
 
 import javax.xml.bind.annotation.XmlAttribute
 
-data class Project(@XmlAttribute val id: String?) {
+data class Project(@XmlAttribute val id: String) {
     @XmlAttribute
     private val internalId: String? = null
     @XmlAttribute
@@ -26,5 +26,5 @@ data class Project(@XmlAttribute val id: String?) {
     @XmlAttribute
     private val parentProject: String? = null
 
-    private constructor():this(null){}
+    private constructor():this(""){}
 }

@@ -5,7 +5,7 @@ object Settings {
 
     val teamcityServerUrl: String = conf.getString("conf.teamcityServer.url")
     val teamcityServerPort: Int = conf.getInt("conf.teamcityServer.port")
-    val webDriverPath: String = conf.getString("webDriverPath")
+    val webDriverPath: String = conf.getString("conf.webDriverPath")
 
 }
 

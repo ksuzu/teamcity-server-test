@@ -10,8 +10,11 @@ import java.util.UUID
 import io.restassured.RestAssured.basic
 import io.restassured.RestAssured.given
 
-class TeamcityClient(private val username: String, private val password: String) {
-    private val spec: RequestSpecification
+class TeamcityClient(username: String, password: String) {
+    private val spec: RequestSpecification = RequestSpecBuilder().addFilter(ResponseLoggingFilter())
+            .setAuth(basic(username, password))
+            .setContentType(ContentType.fromContentType("application/json"))
+            .build()
 
     fun getBuildTypes(): BuildTypes {
         return given().spec(spec).expect().statusCode(HttpStatus.SC_OK).`when`().get("/buildTypes").`as`(BuildTypes::class.java)
@@ -29,14 +32,6 @@ class TeamcityClient(private val username: String, private val password: String)
         return given().spec(spec).expect().statusCode(HttpStatus.SC_OK).`when`().get("/builds").`as`(Builds::class.java)
     }
 
-    init {
-        val responseLoggingFilter = ResponseLoggingFilter()
-        spec = RequestSpecBuilder().addFilter(responseLoggingFilter)
-                .setAuth(basic(username, password))
-                .setContentType(ContentType.fromContentType("application/json"))
-                .build()
-    }
-
     fun createUniqueProject(): Project {
         val projectName = UUID.randomUUID().toString()
         val projectRequest = ProjectRequest(projectName)
@@ -49,7 +44,7 @@ class TeamcityClient(private val username: String, private val password: String)
         given().spec(spec).body(projectRequest).expect().statusCode(expectedResponseStatus!!).`when`().post("/projects")
     }
 
-    fun createBuildType(buildType: BuildType): BuildType {
+    fun createBuildType(buildType: CreateBuildTypeRequest): BuildType {
         return given().spec(spec).body(buildType).expect().statusCode(HttpStatus.SC_OK).`when`().post("/buildTypes").`as`(BuildType::class.java)
     }
 
@@ -69,7 +64,7 @@ class TeamcityClient(private val username: String, private val password: String)
     fun createUniqueBuildType(): BuildType {
         val buildName = UUID.randomUUID().toString()
         val projectId = createUniqueProject().id
-        val buildTypeForCreation = BuildType(buildName, projectId)
+        val buildTypeForCreation = CreateBuildTypeRequest(buildName, projectId)
         return createBuildType(buildTypeForCreation)
     }
 }

@@ -1,5 +1,7 @@
 import io.restassured.RestAssured
 import org.junit.*
+import pageModel.LoginPage
+import pageModel.UserPanel
 
 import java.util.UUID
 

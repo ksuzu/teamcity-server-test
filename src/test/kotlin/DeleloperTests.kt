@@ -5,9 +5,6 @@ import org.junit.Test
 
 import org.junit.Assert.assertEquals
 
-/**
- *
- */
 class DeleloperTests : BaseApiTest() {
     val teamcityClientByTestUser = TeamcityClient("user1", "user1")
 
@@ -32,7 +29,7 @@ class DeleloperTests : BaseApiTest() {
         //test
         val createdBuild = teamcityClientByTestUser.queueBuild(buildRequest)
         val buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize()
-        val expectedBuildNumberAfter = buildNumberBefore!! + 1
+        val expectedBuildNumberAfter = buildNumberBefore + 1
         assertEquals(expectedBuildNumberAfter, buildNumberAfter)
         assertEquals(buildRequest.buildTypeId, createdBuild.buildTypeId)
     }
@@ -44,10 +41,11 @@ class DeleloperTests : BaseApiTest() {
         val buildRequest = createBuildRequest(uniqBuildType)
         val buildInQueue = teamcityClientByTestUser.queueBuild(buildRequest)
         val buildNumberBefore = teamcityClientForDataPrepare.getBuildQueueSize()
+
         //test
         teamcityClientByTestUser.removeBuildFromQueue(buildInQueue)
         val buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize()
-        val expectedBuildNumberAfter = buildNumberBefore!! - 1
+        val expectedBuildNumberAfter = buildNumberBefore - 1
         assertEquals("The number of builds in buildQueue after removing from the queue was different of expected!",
                 expectedBuildNumberAfter, buildNumberAfter)
     }
