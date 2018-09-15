@@ -6,7 +6,7 @@ import org.openqa.selenium.chrome.ChromeOptions
 import java.util.concurrent.TimeUnit
 
 abstract class BaseWebTest {
-    val driver = ChromeDriver(getChromeOptions())
+    val driver = ChromeDriver(ChromeOptions().addArguments("--headless"))
 
     @Before
     fun setUp() {
@@ -16,10 +16,6 @@ abstract class BaseWebTest {
     @After
     fun tearDown() {
         driver.quit()
-    }
-
-    private fun getChromeOptions(): ChromeOptions  {
-        return ChromeOptions().addArguments("--headless");
     }
 
     companion object {

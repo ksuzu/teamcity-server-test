@@ -1,4 +1,4 @@
-import dto.BuildRequest
+import dto.CreateBuildRequest
 import dto.BuildType
 import org.apache.http.HttpStatus
 import org.junit.Test
@@ -6,7 +6,7 @@ import org.junit.Test
 import org.junit.Assert.assertEquals
 
 class DeleloperTests : BaseApiTest() {
-    val teamcityClientByTestUser = TeamcityClient("user1", "user1")
+    private val teamcityClientByTestUser = TeamcityClient("user1", "user1")
 
     @Test
     fun getBuildsTest() {
@@ -60,7 +60,7 @@ class DeleloperTests : BaseApiTest() {
         //test
         teamcityClientByTestUser.removeBuildFromQueue(buildInQueue)
         val buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize()
-        val expectedBuildNumberAfter = buildNumberBefore!! - 1
+        val expectedBuildNumberAfter = buildNumberBefore - 1
         assertEquals("The number of builds in buildQueue after removing from the queue was different of expected!",
                 expectedBuildNumberAfter, buildNumberAfter)
     }
@@ -84,7 +84,7 @@ class DeleloperTests : BaseApiTest() {
         teamcityClientByTestUser.getBuildTypes()
     }
 
-    fun createBuildRequest(buildType: BuildType): BuildRequest {
-        return BuildRequest(buildType.id)
+    private fun createBuildRequest(buildType: BuildType): CreateBuildRequest {
+        return CreateBuildRequest(buildType.id)
     }
 }

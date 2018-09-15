@@ -39,8 +39,8 @@ class SeleniumTests : BaseWebTest() {
         loginPage.loginAs(adminUsername, adminPassword)
         val administrationPage = UserPanel(driver).openAdministrationPage()
         val userModuleBeforeAddingUser = administrationPage.openUsersModule()
-        val userCountBefore = userModuleBeforeAddingUser.usersCount
-        val userCreationPage = userModuleBeforeAddingUser.userCreationPage
+        val userCountBefore = userModuleBeforeAddingUser.getUsersCount()
+        val userCreationPage = userModuleBeforeAddingUser.getUserCreationPage()
         userCreationPage.fillUserField(testUser)
         userCreationPage.fillPasswordField(testPassword)
         userCreationPage.fillRetypedPasswordField(testPassword)
@@ -48,7 +48,7 @@ class SeleniumTests : BaseWebTest() {
 
         val userModuleAfterAddingUser = administrationPage.openUsersModule()
         val expectedCount = userCountBefore!! + 1
-        Assert.assertEquals(expectedCount, userModuleAfterAddingUser.usersCount)
+        Assert.assertEquals(expectedCount, userModuleAfterAddingUser.getUsersCount())
     }
 
     @Test
@@ -60,8 +60,8 @@ class SeleniumTests : BaseWebTest() {
         loginPage.loginAs(adminUsername, adminPassword)
         val administrationPage = UserPanel(driver).openAdministrationPage()
         val userModuleBeforeAddingUser = administrationPage.openUsersModule()
-        val userCountBefore = userModuleBeforeAddingUser.usersCount
-        val userCreationPage = userModuleBeforeAddingUser.userCreationPage
+        val userCountBefore = userModuleBeforeAddingUser.getUsersCount()
+        val userCreationPage = userModuleBeforeAddingUser.getUserCreationPage()
         userCreationPage.fillUserField(testUser)
         userCreationPage.fillPasswordField(testPassword)
         userCreationPage.fillRetypedPasswordField("incorrectPwd")
@@ -71,7 +71,7 @@ class SeleniumTests : BaseWebTest() {
 
         UserPanel(driver).openAdministrationPage()
         val userModuleAfterAddingUser = administrationPage.openUsersModule()
-        Assert.assertEquals(userCountBefore, userModuleAfterAddingUser.usersCount)
+        Assert.assertEquals(userCountBefore, userModuleAfterAddingUser.getUsersCount())
     }
 
     @Test
@@ -83,7 +83,10 @@ class SeleniumTests : BaseWebTest() {
         val dialog = overviewPage.navigateToProjectByName(testProjectName).navigateToBuildTypeByName(testBuildTypeName).navigateToCustomBuildDialog()
         dialog.navigateToParameters().addNewConfigurationParameter("name", "value")
         dialog.submitRunBuild()
-        val d = teamcityClientForDataPrepare.getBuildQueue().build.stream().anyMatch { (_, buildTypeId) -> buildTypeId == id }
-        Assert.assertEquals(true, d)
+
+//        val d = teamcityClientForDataPrepare.getBuildQueue().build.stream().anyMatch { (_, buildTypeId) -> buildTypeId == id }
+        val d = teamcityClientForDataPrepare.getBuildQueue().build.count { build -> build.buildTypeId == id }
+
+        Assert.assertEquals(1, d)
     }
 }

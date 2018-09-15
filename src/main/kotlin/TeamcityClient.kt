@@ -48,8 +48,7 @@ class TeamcityClient(username: String, password: String) {
         return given().spec(spec).body(buildType).expect().statusCode(HttpStatus.SC_OK).`when`().post("/buildTypes").`as`(BuildType::class.java)
     }
 
-    fun queueBuild(build: BuildRequest): Build {
-        // todo why .java?
+    fun queueBuild(build: CreateBuildRequest): Build {
         return given().spec(spec).body(build).expect().statusCode(HttpStatus.SC_OK).`when`().post("/buildQueue").`as`(Build::class.java)
     }
 
