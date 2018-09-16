@@ -57,6 +57,7 @@ class DeleloperTests : BaseApiTest() {
         val buildRequest = createBuildRequest(uniqBuildType)
         val buildInQueue = teamcityClientForDataPrepare.queueBuild(buildRequest)
         val buildNumberBefore = teamcityClientForDataPrepare.getBuildQueueSize()
+
         //test
         teamcityClientByTestUser.removeBuildFromQueue(buildInQueue)
         val buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize()
@@ -72,6 +73,7 @@ class DeleloperTests : BaseApiTest() {
         val buildRequest = createBuildRequest(uniqBuildType)
         val buildInQueue = teamcityClientForDataPrepare.queueBuild(buildRequest)
         val buildNumberBefore = teamcityClientForDataPrepare.getBuildQueueSize()
+
         //test
         teamcityClientByTestUser.removeBuildFromQueue(buildInQueue, HttpStatus.SC_FORBIDDEN)
         val buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize()

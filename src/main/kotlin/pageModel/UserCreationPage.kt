@@ -5,24 +5,28 @@ import org.openqa.selenium.WebDriver
 
 class UserCreationPage(private val driver: WebDriver) {
 
-    fun fillUserField(teamcityUsername: String) {
+    fun fillUserField(teamcityUsername: String): UserCreationPage {
         driver.findElement(USERNAME).sendKeys(teamcityUsername)
+        return this;
     }
 
     fun fillNameField(name: String) {
         driver.findElement(NAME).sendKeys(name)
     }
 
-    fun fillPasswordField(password: String) {
+    fun fillPasswordField(password: String): UserCreationPage {
         driver.findElement(PASSWORD1).sendKeys(password)
+        return this
     }
 
-    fun fillRetypedPasswordField(password: String) {
+    fun fillRetypedPasswordField(password: String): UserCreationPage {
         driver.findElement(RETYPED_PASSWORD).sendKeys(password)
+        return this
     }
 
-    fun clickSubmitButton() {
+    fun clickSubmitButton(): UserCreationPage {
         driver.findElement(SUBMIT_BUTTON).click()
+        return this
     }
 
     fun tryLookForPasswordError(): String {

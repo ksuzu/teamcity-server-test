@@ -6,8 +6,9 @@ import org.openqa.selenium.WebDriver
 class LoginPage(private val driver: WebDriver, private val loginPageUrl: String)//String.format("%s/login.html", baseUri);
 {
 
-    fun open() {
+    fun open(): LoginPage {
         driver.get(loginPageUrl)
+        return this
     }
 
     fun loginAs(user: String, password: String): OverviewPage {

@@ -14,6 +14,13 @@ abstract class BaseUITest {
         .addArguments("--headless")
     val driver = RemoteWebDriver(URL("${Settings.webDriverUrl}:${Settings.webDriverPort}/wd/hub"), options)
 
+    val teamcityClientForDataPrepare = TeamcityClient(Settings.teamcityServerAdminUsername,
+            Settings.teamcityServerAdminPassword)
+    val devUsername = Settings.teamcityServerDevUsername
+    val devPassword = Settings.teamcityServerDevPassword
+    val adminUsername = Settings.teamcityServerAdminUsername
+    val adminPassword = Settings.teamcityServerAdminPassword
+
     @get:Rule
     val screenShootRule = ScreenShotRule(driver, Settings.webDriverScreenshotPath)
 
@@ -22,17 +29,8 @@ abstract class BaseUITest {
         driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS)
     }
 
-    @After
-    fun shutdown() {
-        driver.quit()
-    }
-
     companion object {
         val TEAMCITY_BASE_URI_FOR_DRIVER = "${Settings.teamcityServerUrlFromDriver}:${Settings.teamcityServerPort}"
         val TEAMCITY_BASE_URI_FOR_LOCAL = "${Settings.teamcityServerUrlFromTests}:${Settings.teamcityServerPort}"
-
-//        init {
-//            System.setProperty("webdriver.chrome.driver", Settings.webDriverPath)
-//        }
     }
 }
