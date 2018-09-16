@@ -49,3 +49,15 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+
+task testUi(type: Test) {
+    filter {
+        includeTestsMatching "tests.ui.*"
+    }
+}
+
+task testApi(type: Test) {
+    filter {
+        includeTestsMatching "tests.api.*"
+    }
+}

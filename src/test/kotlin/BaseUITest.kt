@@ -1,9 +1,9 @@
-import org.junit.After
+import dto.UserCredentials
+import io.restassured.RestAssured
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
-import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
-import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.remote.RemoteWebDriver
 import java.net.URL
 
@@ -14,8 +14,8 @@ abstract class BaseUITest {
         .addArguments("--headless")
     val driver = RemoteWebDriver(URL("${Settings.webDriverUrl}:${Settings.webDriverPort}/wd/hub"), options)
 
-    val teamcityClientForDataPrepare = TeamcityClient(Settings.teamcityServerAdminUsername,
-            Settings.teamcityServerAdminPassword)
+    val teamcityClientForDataPrepare = TeamcityClient(UserCredentials(Settings.teamcityServerAdminUsername,
+            Settings.teamcityServerAdminPassword))
     val devUsername = Settings.teamcityServerDevUsername
     val devPassword = Settings.teamcityServerDevPassword
     val adminUsername = Settings.teamcityServerAdminUsername
@@ -31,6 +31,13 @@ abstract class BaseUITest {
 
     companion object {
         val TEAMCITY_BASE_URI_FOR_DRIVER = "${Settings.teamcityServerUrlFromDriver}:${Settings.teamcityServerPort}"
-        val TEAMCITY_BASE_URI_FOR_LOCAL = "${Settings.teamcityServerUrlFromTests}:${Settings.teamcityServerPort}"
+        val TEAMCITY_BASE_URI_FOR_API = "${Settings.teamcityServerUrlFromTests}:${Settings.teamcityServerPort}"
+
+        @BeforeClass
+        @JvmStatic
+        fun initTeamcityApiClient() {
+            RestAssured.baseURI = TEAMCITY_BASE_URI_FOR_API
+            RestAssured.basePath = "/app/rest/"
+        }
     }
 }
