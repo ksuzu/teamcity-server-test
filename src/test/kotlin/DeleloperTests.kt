@@ -6,7 +6,7 @@ import org.junit.Test
 import org.junit.Assert.assertEquals
 
 class DeleloperTests : BaseApiTest() {
-    private val teamcityClientByTestUser = TeamcityClient("user1", "user1")
+    private val teamcityClientByTestUser = TeamcityClient(Settings.teamcityServerDevUsername, Settings.teamcityServerDevPassword)
 
     @Test
     fun getBuildsTest() {

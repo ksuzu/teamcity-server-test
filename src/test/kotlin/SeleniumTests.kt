@@ -5,25 +5,27 @@ import pageModel.UserPanel
 
 import java.util.UUID
 
-class SeleniumTests : BaseWebTest() {
-    private val adminUsername = "admin"
-    private val adminPassword = "admin1"
-    private val devUsername = "user1"
-    private val devPassword = "user1"
-    private val teamcityClientForDataPrepare = TeamcityClient("admin", "admin1")
+class SeleniumTests : BaseUITest() {
+    protected val teamcityClientForDataPrepare = TeamcityClient(Settings.teamcityServerAdminUsername,
+            Settings.teamcityServerAdminPassword)
+    private val devUsername = Settings.teamcityServerDevUsername
+    private val devPassword = Settings.teamcityServerDevPassword
+    private val adminUsername = Settings.teamcityServerAdminUsername
+    private val adminPassword = Settings.teamcityServerAdminPassword
+
 
     companion object {
         @BeforeClass
         @JvmStatic
         fun initTeamcityApiClient() {
-            RestAssured.baseURI = BASE_URI
+            RestAssured.baseURI = TEAMCITY_BASE_URI_FOR_LOCAL
             RestAssured.basePath = "/app/rest/"
         }
     }
 
     @Test
     fun testAvailabilityAdministrationModuleByDevUser() {
-        val loginPage = LoginPage(driver, BASE_URI)
+        val loginPage = LoginPage(driver, TEAMCITY_BASE_URI_FOR_DRIVER)
         loginPage.open()
         loginPage.loginAs(devUsername, devPassword)
         Assert.assertEquals(true, UserPanel(driver).isAdministrationPageLinkAbset)
@@ -33,7 +35,7 @@ class SeleniumTests : BaseWebTest() {
     fun testCreateNewUserByAdmin() {
         val testUser = UUID.randomUUID().toString()
         val testPassword = UUID.randomUUID().toString()
-        val loginPage = LoginPage(driver, BASE_URI)
+        val loginPage = LoginPage(driver, TEAMCITY_BASE_URI_FOR_DRIVER)
         loginPage.open()
         loginPage.loginAs(adminUsername, adminPassword)
         val administrationPage = UserPanel(driver).openAdministrationPage()
@@ -54,7 +56,7 @@ class SeleniumTests : BaseWebTest() {
     fun incorrectEnterRetypePasswordOnUserCreation_shouldGiveError() {
         val testUser = UUID.randomUUID().toString()
         val testPassword = UUID.randomUUID().toString()
-        val loginPage = LoginPage(driver, BASE_URI)
+        val loginPage = LoginPage(driver, TEAMCITY_BASE_URI_FOR_DRIVER)
         loginPage.open()
         loginPage.loginAs(adminUsername, adminPassword)
         val administrationPage = UserPanel(driver).openAdministrationPage()
@@ -78,7 +80,7 @@ class SeleniumTests : BaseWebTest() {
         //prepare test data
         val (id, testBuildTypeName, testProjectName) = teamcityClientForDataPrepare.createUniqueBuildType()
         //test
-        val loginPage = LoginPage(driver, BASE_URI)
+        val loginPage = LoginPage(driver, TEAMCITY_BASE_URI_FOR_DRIVER)
         loginPage.open()
         val overviewPage = loginPage.loginAs(adminUsername, adminPassword)
         val dialog = overviewPage.navigateToProjectByName(testProjectName).navigateToBuildTypeByName(testBuildTypeName).navigateToCustomBuildDialog()

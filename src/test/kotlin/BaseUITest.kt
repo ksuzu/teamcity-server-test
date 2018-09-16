@@ -9,11 +9,9 @@ import java.net.URL
 
 import java.util.concurrent.TimeUnit
 
-abstract class BaseWebTest {
-//    val desiredCapabilities = DesiredCapabilities.chrome();
+abstract class BaseUITest {
     val options = ChromeOptions()
-//        .addArguments("--headless")
-//        .addArguments("no-sandbox")
+        .addArguments("--headless")
     val driver = RemoteWebDriver(URL("${Settings.webDriverUrl}:${Settings.webDriverPort}/wd/hub"), options)
 
     @get:Rule
@@ -30,7 +28,8 @@ abstract class BaseWebTest {
     }
 
     companion object {
-        val BASE_URI = "${Settings.teamcityServerUrl}:${Settings.teamcityServerPort}"
+        val TEAMCITY_BASE_URI_FOR_DRIVER = "${Settings.teamcityServerUrlFromDriver}:${Settings.teamcityServerPort}"
+        val TEAMCITY_BASE_URI_FOR_LOCAL = "${Settings.teamcityServerUrlFromTests}:${Settings.teamcityServerPort}"
 
 //        init {
 //            System.setProperty("webdriver.chrome.driver", Settings.webDriverPath)
