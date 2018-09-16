@@ -9,11 +9,12 @@ import org.junit.Assert.assertEquals
 import BaseApiTest
 import dto.UserCredentials
 
-class BuildQueueByQuestUserTests() : BaseApiTest() {
+class BuildQueueByQuestUserTests : BaseApiTest() {
 
     @Test
-    fun deleteBuildCreatedAnotherUserFromBuildQueue_ShouldBeForbidden() {
-        val teamcityClientByTestUser = TeamcityClient(UserCredentials("guest", ""))
+    fun deleteExistedBuildFromBuild_whenUserHasNotPermissions_ShouldBeForbidden() {
+        val teamcityClientByTestUser = TeamcityClient(UserCredentials(Settings.teamcityServerQuestUsername,
+                Settings.teamcityServerQuestPassword))
 
         //prepere test data
         val uniqBuildType = teamcityClientForDataPrepare.createUniqueBuildType()
@@ -27,6 +28,4 @@ class BuildQueueByQuestUserTests() : BaseApiTest() {
         assertEquals("The number of builds in the queue before and after cancel-operation is not equal!",
                 buildNumberBefore, buildNumberAfter)
     }
-
-
 }

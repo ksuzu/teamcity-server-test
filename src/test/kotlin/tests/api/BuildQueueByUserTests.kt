@@ -25,7 +25,7 @@ class BuildQueueByUserTests(private val userCredentials: UserCredentials) : Base
 
     @Test
     //TODO почему-то не работает авторизация через куки
-    fun queueNewBuild_shouldIncreaseQueqeSize() {
+    fun queueNewBuild_shouldIncreaseQueueSize() {
         val teamcityClientByTestUser = TeamcityClient(userCredentials)
 
         //prepere test data
@@ -42,7 +42,7 @@ class BuildQueueByUserTests(private val userCredentials: UserCredentials) : Base
     }
 
     @Test
-    fun deleteExistedBuildFromBuildQueue_shouldIncreaseQueqeSize() {
+    fun deleteExistedBuildFromBuildQueue_shouldIncreaseQueueSize() {
         val teamcityClientByTestUser = TeamcityClient(userCredentials)
 
         //prepere test data

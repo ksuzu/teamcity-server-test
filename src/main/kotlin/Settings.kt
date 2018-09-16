@@ -14,10 +14,12 @@ object Settings {
     val webDriverPort: String = webdriverConfig.getString("port")
 
     private val usersConfig = conf.getConfig("users")
-    val teamcityServerDevUsername: String = usersConfig.getString("dev.username")
     val teamcityServerAdminUsername: String = usersConfig.getString("admin.username")
-    val teamcityServerDevPassword: String = usersConfig.getString("dev.password")
     val teamcityServerAdminPassword: String = usersConfig.getString("admin.password")
+    val teamcityServerDevUsername: String = usersConfig.getString("dev.username")
+    val teamcityServerDevPassword: String = usersConfig.getString("dev.password")
+    val teamcityServerQuestUsername: String = usersConfig.getString("quest.username")
+    val teamcityServerQuestPassword: String = usersConfig.getString("quest.password")
 
 }
 

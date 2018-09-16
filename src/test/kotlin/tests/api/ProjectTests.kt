@@ -15,5 +15,4 @@ class ProjectTests : BaseApiTest() {
     fun createProjectByAdminUser_ShouldBeResponseOk() {
         teamcityClientByAdminUser.createUniqueProject(HttpStatus.SC_OK)
     }
-
 }
