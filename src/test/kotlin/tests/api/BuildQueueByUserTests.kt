@@ -37,7 +37,8 @@ class BuildQueueByUserTests(private val userCredentials: UserCredentials) : Base
         val createdBuild = teamcityClientByTestUser.queueBuild(buildRequest)
         val buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize()
         val expectedBuildNumberAfter = buildNumberBefore + 1
-        assertEquals(expectedBuildNumberAfter, buildNumberAfter)
+        assertEquals("The number of builds in buildQueue after adding build to the queue was different than  expected!",
+                expectedBuildNumberAfter, buildNumberAfter)
         assertEquals(buildRequest.buildTypeId, createdBuild.buildTypeId)
     }
 
@@ -55,7 +56,7 @@ class BuildQueueByUserTests(private val userCredentials: UserCredentials) : Base
         teamcityClientByTestUser.removeBuildFromQueue(buildInQueue, HttpStatus.SC_NO_CONTENT)
         val buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize()
         val expectedBuildNumberAfter = buildNumberBefore - 1
-        assertEquals("The number of builds in buildQueue after removing from the queue was different of expected!",
+        assertEquals("The number of builds in buildQueue after removing from the queue was different than  expected!",
                 expectedBuildNumberAfter, buildNumberAfter)
     }
 }

@@ -27,7 +27,7 @@ class BuildQueueTests : BaseApiTest() {
         teamcityClientByAdminUser.removeBuildFromQueue(buildInQueue2, HttpStatus.SC_NO_CONTENT)
         val buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize()
         val expectedBuildNumberAfter = buildNumberBefore - 1
-        assertEquals("The number of builds in buildQueue after removing from the queue was different of expected!",
+        assertEquals("The number of builds in buildQueue after removing from the queue was different than expected!",
                 expectedBuildNumberAfter, buildNumberAfter)
     }
 }

@@ -21,6 +21,7 @@ class BuildQueueTests : BaseUITest() {
         dialog.submitRunBuild()
 
         val numberOfBuildsOfThisTypeInQueue = teamcityClientForDataPrepare.getBuildQueue().build.count { build -> build.buildTypeId == buildType.id }
-        Assert.assertEquals("Number of builds of this buildType in queue was different of expected!", 1, numberOfBuildsOfThisTypeInQueue)
+        Assert.assertEquals("Number of builds of this buildType in queue was different than expected!",
+                1, numberOfBuildsOfThisTypeInQueue)
     }
 }

@@ -45,9 +45,9 @@ class UserCreationTests : BaseUITest() {
                 .fillRetypedPasswordField("incorrectPwd")
                 .clickSubmitButton()
 
-        Assert.assertEquals("Passwords mismatch", userCreationPage.tryLookForPasswordError())
+        Assert.assertEquals("Expected error message was not displayed!","Passwords mismatch", userCreationPage.tryLookForPasswordError())
 
         val userModuleAfterAddingUser =  UserPanel(driver).openAdministrationPage().openUsersModule()
-        Assert.assertEquals(userCountBefore, userModuleAfterAddingUser.getUsersCount())
+        Assert.assertEquals("Number of users after additon new user was different than expected!", userCountBefore, userModuleAfterAddingUser.getUsersCount())
     }
 }
