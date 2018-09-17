@@ -6,6 +6,7 @@ import org.junit.Test
 import org.junit.Assert.assertEquals
 import BaseApiTest
 import org.apache.http.HttpStatus
+import java.util.concurrent.TimeUnit
 
 class BuildQueueTests : BaseApiTest() {
     @Test
@@ -15,7 +16,6 @@ class BuildQueueTests : BaseApiTest() {
 
     @Test
     fun deleteTargetBuildFromBuildQueue_whenHasManyBuilds_shouldCancaledOnlyTarget() {
-        teamcityClientForDataPrepare.getBuildQueueSize()
         //prepere test data
         val uniqBuildType = teamcityClientForDataPrepare.createUniqueBuildType()
         teamcityClientForDataPrepare.queueBuild(CreateBuildRequest(uniqBuildType.id))
@@ -24,10 +24,42 @@ class BuildQueueTests : BaseApiTest() {
         val buildNumberBefore = teamcityClientForDataPrepare.getBuildQueueSize()
 
         //test
-        teamcityClientByAdminUser.removeBuildFromQueue(buildInQueue2, HttpStatus.SC_NO_CONTENT)
+        teamcityClientByAdminUser.removeBuildFromQueue(buildInQueue2, HttpStatus.SC_OK)
         val buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize()
         val expectedBuildNumberAfter = buildNumberBefore - 1
         assertEquals("The number of builds in buildQueue after removing from the queue was different than expected!",
                 expectedBuildNumberAfter, buildNumberAfter)
+    }
+
+    @Test
+    fun repeatingQueueBuild_whenQuietPeriodWasEnd_shouldAddSecondBuildIntoQueue() {
+        val defaultQuietPeriodFromSeconds = 60L
+        val uniqBuildType = teamcityClientForDataPrepare.createUniqueBuildType()
+
+        teamcityClientByDevUser.queueBuild(CreateBuildRequest(uniqBuildType.id))
+        TimeUnit.SECONDS.sleep(defaultQuietPeriodFromSeconds + 1)
+
+        val buildNumberBefore = teamcityClientForDataPrepare.getBuildQueueSize()
+        teamcityClientByDevUser.queueBuild(CreateBuildRequest(uniqBuildType.id))
+        val buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize()
+
+
+        val expectedBuildNumberAfter = buildNumberBefore + 1
+        assertEquals("The number of builds in buildQueue was different than  expected!",
+                expectedBuildNumberAfter, buildNumberAfter)
+    }
+
+    @Test
+    fun repeatingQueueBuild_whenQuietPeriodWasNotEnd_shouldNotAddSecondBuildIntoQueue() {
+        val uniqBuildType = teamcityClientForDataPrepare.createUniqueBuildType()
+        teamcityClientByDevUser.queueBuild(CreateBuildRequest(uniqBuildType.id))
+
+
+        val buildNumberBefore = teamcityClientForDataPrepare.getBuildQueueSize()
+        teamcityClientByDevUser.queueBuild(CreateBuildRequest(uniqBuildType.id))
+        val buildNumberAfter = teamcityClientForDataPrepare.getBuildQueueSize()
+
+        assertEquals("The number of builds in buildQueue was different than  expected!",
+                buildNumberBefore, buildNumberAfter)
     }
 }

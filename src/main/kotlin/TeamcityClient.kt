@@ -9,9 +9,11 @@ import java.util.UUID
 
 import io.restassured.RestAssured.basic
 import io.restassured.RestAssured.given
+import io.restassured.filter.log.RequestLoggingFilter
 
 class TeamcityClient(userCredentials: UserCredentials) {
     private val spec: RequestSpecification = RequestSpecBuilder().addFilter(ResponseLoggingFilter())
+            .addFilter(RequestLoggingFilter())
             .setAuth(basic(userCredentials.username, userCredentials.password))
             .setContentType(ContentType.fromContentType("application/json"))
             .build()
@@ -53,7 +55,8 @@ class TeamcityClient(userCredentials: UserCredentials) {
     }
 
     fun removeBuildFromQueue(build: Build, expectedResponseStatus: Int?) {
-        given().spec(spec).body(build).expect().statusCode(expectedResponseStatus!!).`when`().delete("/buildQueue")
+        given().spec(spec).body(BuildCancelRequest("", false)).
+                expect().statusCode(expectedResponseStatus!!).`when`().post("/buildQueue/id:${build.id}")
     }
 
     fun createUniqueBuildType(): BuildType {
