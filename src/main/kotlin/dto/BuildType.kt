@@ -12,19 +12,4 @@ data class BuildType(@XmlAttribute val id: String,
             "",
             "",
             "")
-
-    @XmlAttribute
-    val description: String? = null
-    @XmlAttribute
-    val internalId: String? = null
-    @XmlAttribute
-    val templateFlag: Boolean? = false
-    @XmlAttribute
-    val type: String? = null
-    @XmlAttribute
-    val paused: Boolean? = false
-    @XmlAttribute
-    val uuid: String? = null
-    @XmlAttribute
-    val projectInternalId: String? = null
 }
